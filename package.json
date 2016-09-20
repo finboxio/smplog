@@ -1,0 +1,67 @@
+{
+  "name": "smplog",
+  "version": "0.0.1",
+  "description": "Simple logging module to stdout. Machine and human readable.",
+  "main": "index.js",
+  "scripts": {
+    "ava": "./node_modules/.bin/ava --watch",
+    "test": "./node_modules/.bin/nyc ./node_modules/.bin/ava",
+    "coverage": "open coverage/index.html",
+    "lint": "./node_modules/.bin/eslint .",
+    "precommit": "npm run lint",
+    "prepush": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/finboxio/smplog.git"
+  },
+  "keywords": [
+    "log"
+  ],
+  "author": "finboxio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/finboxio/smplog/issues"
+  },
+  "homepage": "https://github.com/finboxio/smplog#readme",
+  "dependencies": {
+    "object-assign": "4.1.0"
+  },
+  "devDependencies": {
+    "ava": "0.16.0",
+    "chai": "3.5.0",
+    "eslint": "3.4.0",
+    "eslint-config-standard": "6.0.0",
+    "eslint-plugin-promise": "2.0.1",
+    "eslint-plugin-standard": "2.0.0",
+    "husky": "0.11.7",
+    "nyc": "8.3.0"
+  },
+  "ava": {
+    "timeout": "2s",
+    "verbose": true,
+    "files": [
+      "test/*.js"
+    ],
+    "source": [
+      "**/*.js"
+    ]
+  },
+  "nyc": {
+    "check-coverage": true,
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 80,
+    "reporter": [
+      "text",
+      "text-summary",
+      "html"
+    ],
+    "exclude": [
+      "test/",
+      "**/test",
+      "node_modules/**"
+    ]
+  }
+}
