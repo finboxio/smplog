@@ -1,5 +1,5 @@
 require('chai').should()
-var test = require('ava').test
+var test = require('ava').test.serial
 
 var fmt = require('util').format
 var strip = require('chalk').stripColor
@@ -61,20 +61,20 @@ test('the log should support disabling colors', function (t) {
 })
 
 test('the log should support disabling colors via the environment', function (t) {
-  process.env.LOG_COLORS = 'false'
+  process.env.SMPLOG_COLORS = 'false'
   var log = Log({}, { log: t.context.log })
   log.debug('test', { value: 'hi' })
   t.context.stdout.should.equal('[debug] test {"value":"hi"}')
 })
 
 test('the log should initialize with appropriate defaults', function (t) {
-  process.env.LOG_LEVEL = 'error'
+  process.env.SMPLOG_LEVEL = 'error'
   var log = Log()
   log.debug('test', { pass: true })
 })
 
 test('the log level should override the environment value', function (t) {
-  process.env.LOG_LEVEL = 'error'
+  process.env.SMPLOG_LEVEL = 'error'
   var log = Log({}, { level: 'warn', log: t.context.log })
   log.warn('test', { value: 'x' })
   log.error('test', { value: 'hi' })
@@ -82,9 +82,16 @@ test('the log level should override the environment value', function (t) {
 })
 
 test('the log should take the default level from the environment', function (t) {
-  process.env.LOG_LEVEL = 'error'
+  process.env.SMPLOG_LEVEL = 'error'
   var log = Log({}, { log: t.context.log })
   log.warn('test', { value: 'x' })
   log.error('test', { value: 'hi' })
   strip(t.context.stdout).should.equal('[error] test {"value":"hi"}')
+})
+
+test('the log should support suppressing metadata', function (t) {
+  process.env.SMPLOG_META = 'false'
+  var log = Log({}, { log: t.context.log })
+  log.error('test', { value: 'hi' })
+  strip(t.context.stdout).should.equal('[error] test')
 })
