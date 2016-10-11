@@ -1,4 +1,9 @@
 
+0.0.4 / 2016-10-11
+==================
+
+  * update colors and add option to suppress metadata output
+
 0.0.3 / 2016-09-21
 ==================
 
