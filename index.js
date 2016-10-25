@@ -15,7 +15,11 @@ module.exports = function (defaults, options) {
   var color = options.color !== false && String(process.env.SMPLOG_COLORS) !== 'false'
   var meta = options.meta !== false && String(process.env.SMPLOG_META) !== 'false'
 
-  var logger = {}
+  var logger = {
+    tags: defaults,
+    tag: (meta) => assign(defaults, meta)
+  }
+
   levels.forEach((l, i) => {
     logger[l] = function (msg, details) {
       if (i >= LOG_LEVEL) {

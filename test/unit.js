@@ -60,6 +60,14 @@ test('the log should support disabling colors', function (t) {
   t.context.stdout.should.equal('[debug] test {"value":"hi"}')
 })
 
+test('the log should support tags', function (t) {
+  var log = Log({}, { log: t.context.log })
+  log.tag({ tag: 'tag' })
+  log.debug('tagged')
+  strip(t.context.stdout).should.equal('[debug] tagged {"tag":"tag"}')
+  log.tags.should.deep.equal({ tag: 'tag' })
+})
+
 test('the log should support disabling colors via the environment', function (t) {
   process.env.SMPLOG_COLORS = 'false'
   var log = Log({}, { log: t.context.log })
