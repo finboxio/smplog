@@ -36,6 +36,22 @@ log.info(`request started at ${Date.now()}`)
 [info] request started at 1474397320662 {"request_id":"bea91083fa003d"}
 ```
 
+#### Tags
+Defaults can be added to a logger after initialization by tagging it:
+
+```
+var log = Log()
+log.tag({ tag_name: 'tag' })
+log.info('tagged message')
+
+// log.tags === { tag_name: 'tag' }
+
+=====
+
+[info] tagged message {"tag_name":"tag"}
+
+```
+
 #### Options
 You can also pass options into the log constructor to overwrite the default log level or log output function:
 
@@ -43,8 +59,8 @@ You can also pass options into the log constructor to overwrite the default log 
 var log = Log({ tag: 'errors' }, { level: 'error', log: console.log })
 ```
 
-> **Note** 
-> 
+> **Note**
+>
 > The `log` property is exposed primarily for testing. Smplog isn't intended to be used with alternative transports. If you want something more complex, there are lots of great fully-featured logging libraries on npm.
 
 
