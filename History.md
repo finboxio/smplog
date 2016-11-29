@@ -1,4 +1,9 @@
 
+0.0.8 / 2016-11-28
+==================
+
+  * make padding after level uniform so messages line up
+
 0.0.7 / 2016-11-28
 ==================
 

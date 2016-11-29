@@ -1,6 +1,6 @@
 {
   "name": "smplog",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Simple logging module to stdout. Machine and human readable.",
   "main": "index.js",
   "scripts": {
