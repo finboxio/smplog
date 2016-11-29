@@ -24,7 +24,7 @@ module.exports = function (defaults, options) {
     logger[l] = function (msg, details) {
       if (i >= LOG_LEVEL) {
         if (color) {
-          if (meta) log(`%s %s %s`, colors[i](`[${l}]`), msg, chalk.dim(JSON.stringify(assign({}, defaults, details))))
+          if (meta) log(`%s %s %s`, colors[i](`[${l}]`), msg, chalk.gray.dim(JSON.stringify(assign({}, defaults, details))))
           else log(`%s %s`, colors[i](`[${l}]`), msg)
         } else {
           if (meta) log(`%s %s %s`, `[${l}]`, msg, JSON.stringify(assign({}, defaults, details)))
