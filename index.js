@@ -1,5 +1,6 @@
 var assign = require('object-assign')
 var chalk = require('chalk')
+var stringify = require('json-stringify-safe')
 
 var levels = [ 'debug', 'info', 'warn', 'error', 'none' ]
 var colors = [ chalk.gray.bold, chalk.blue.bold, chalk.yellow.bold, chalk.red.bold, chalk.black.bold ]
@@ -24,10 +25,10 @@ module.exports = function (defaults, options) {
     logger[l] = function (msg, details) {
       if (i >= LOG_LEVEL) {
         if (color) {
-          if (meta) log(`%s %s %s`, colors[i](`[${l}]`), msg, chalk.gray.dim(JSON.stringify(assign({}, defaults, details))))
+          if (meta) log(`%s %s %s`, colors[i](`[${l}]`), msg, chalk.gray.dim(stringify(assign({}, defaults, details))))
           else log(`%s %s`, colors[i](`[${l}]`), msg)
         } else {
-          if (meta) log(`%s %s %s`, `[${l}]`, msg, JSON.stringify(assign({}, defaults, details)))
+          if (meta) log(`%s %s %s`, `[${l}]`, msg, stringify(assign({}, defaults, details)))
           else log(`%s %s`, `[${l}]`, msg)
         }
       }

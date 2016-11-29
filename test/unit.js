@@ -35,6 +35,15 @@ test('the log should support error-level messages', function (t) {
   strip(t.context.stdout).should.equal('[error] test {"value":"hi"}')
 })
 
+test('the log should not throw on circular meta references', function (t) {
+  var log = Log({}, { log: t.context.log })
+  var circular = {}
+  circular.ref = circular
+  circular.list = [ circular, circular ]
+  log.info('test', circular)
+  strip(t.context.stdout.should.equal('[info] test {"ref":{"ref":"[Circular ~.ref]","list":["[Circular ~.ref]","[Circular ~.ref]"]},"list":[{"ref":"[Circular ~.list.0]","list":"[Circular ~.list]"},{"ref":"[Circular ~.list.1]","list":"[Circular ~.list]"}]}'))
+})
+
 test('the log should suppress messages below a specified level', function (t) {
   var log = Log({}, { level: 'warn', log: t.context.log })
   log.info('test', { value: 'x' })
