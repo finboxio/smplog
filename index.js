@@ -21,15 +21,17 @@ module.exports = function (defaults, options) {
     tag: (meta) => assign(defaults, meta)
   }
 
+  var llength = Math.max(...levels.map((l) => l.length))
   levels.forEach((l, i) => {
+    var lformat = [ '%s', ...(new Array(llength - l.length).map((k) => '')) ].join(' ')
     logger[l] = function (msg, details) {
       if (i >= LOG_LEVEL) {
         if (color) {
-          if (meta) log(`%s %s %s`, colors[i](`[${l}]`), msg, chalk.gray.dim(stringify(assign({}, defaults, details))))
-          else log(`%s %s`, colors[i](`[${l}]`), msg)
+          if (meta) log(`${lformat} %s %s`, colors[i](`[${l}]`), msg, chalk.gray.dim(stringify(assign({}, defaults, details))))
+          else log(`${lformat} %s`, colors[i](`[${l}]`), msg)
         } else {
-          if (meta) log(`%s %s %s`, `[${l}]`, msg, stringify(assign({}, defaults, details)))
-          else log(`%s %s`, `[${l}]`, msg)
+          if (meta) log(`${lformat} %s %s`, `[${l}]`, msg, stringify(assign({}, defaults, details)))
+          else log(`${lformat} %s`, `[${l}]`, msg)
         }
       }
     }

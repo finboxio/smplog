@@ -20,13 +20,13 @@ test('the log should print debug-level messages', function (t) {
 test('the log should print info-level message', function (t) {
   var log = Log({}, { log: t.context.log })
   log.info('test', { value: 'hi' })
-  strip(t.context.stdout).should.equal('[info] test {"value":"hi"}')
+  strip(t.context.stdout).should.equal('[info]  test {"value":"hi"}')
 })
 
 test('the log should support warn-level messages', function (t) {
   var log = Log({}, { log: t.context.log })
   log.warn('test', { value: 'hi' })
-  strip(t.context.stdout).should.equal('[warn] test {"value":"hi"}')
+  strip(t.context.stdout).should.equal('[warn]  test {"value":"hi"}')
 })
 
 test('the log should support error-level messages', function (t) {
@@ -41,14 +41,14 @@ test('the log should not throw on circular meta references', function (t) {
   circular.ref = circular
   circular.list = [ circular, circular ]
   log.info('test', circular)
-  strip(t.context.stdout.should.equal('[info] test {"ref":{"ref":"[Circular ~.ref]","list":["[Circular ~.ref]","[Circular ~.ref]"]},"list":[{"ref":"[Circular ~.list.0]","list":"[Circular ~.list]"},{"ref":"[Circular ~.list.1]","list":"[Circular ~.list]"}]}'))
+  strip(t.context.stdout.should.equal('[info]  test {"ref":{"ref":"[Circular ~.ref]","list":["[Circular ~.ref]","[Circular ~.ref]"]},"list":[{"ref":"[Circular ~.list.0]","list":"[Circular ~.list]"},{"ref":"[Circular ~.list.1]","list":"[Circular ~.list]"}]}'))
 })
 
 test('the log should suppress messages below a specified level', function (t) {
   var log = Log({}, { level: 'warn', log: t.context.log })
   log.info('test', { value: 'x' })
   log.warn('test', { value: 'hi' })
-  strip(t.context.stdout).should.equal('[warn] test {"value":"hi"}')
+  strip(t.context.stdout).should.equal('[warn]  test {"value":"hi"}')
 })
 
 test('the log should include default properties with all messages', function (t) {
@@ -95,7 +95,7 @@ test('the log level should override the environment value', function (t) {
   var log = Log({}, { level: 'warn', log: t.context.log })
   log.warn('test', { value: 'x' })
   log.error('test', { value: 'hi' })
-  strip(t.context.stdout).should.equal('[warn] test {"value":"x"}[error] test {"value":"hi"}')
+  strip(t.context.stdout).should.equal('[warn]  test {"value":"x"}[error] test {"value":"hi"}')
 })
 
 test('the log should take the default level from the environment', function (t) {
