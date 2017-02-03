@@ -25,12 +25,14 @@ module.exports = function (defaults, options) {
   levels.forEach((l, i) => {
     var lformat = [ '%s', ...(new Array(llength - l.length).map((k) => '')) ].join(' ')
     logger[l] = function (msg, details) {
+      const err = {}
+      if (msg instanceof Error) { err[l === 'warn' ? 'warning' : 'error'] = msg }
       if (i >= LOG_LEVEL) {
         if (color) {
-          if (meta) log(`${lformat} %s %s`, colors[i](`[${l}]`), msg, chalk.gray.dim(stringify(assign({}, defaults, details))))
+          if (meta) log(`${lformat} %s %s`, colors[i](`[${l}]`), msg, chalk.gray.dim(stringify(assign({}, err, defaults, details))))
           else log(`${lformat} %s`, colors[i](`[${l}]`), msg)
         } else {
-          if (meta) log(`${lformat} %s %s`, `[${l}]`, msg, stringify(assign({}, defaults, details)))
+          if (meta) log(`${lformat} %s %s`, `[${l}]`, msg, stringify(assign({}, err, defaults, details)))
           else log(`${lformat} %s`, `[${l}]`, msg)
         }
       }

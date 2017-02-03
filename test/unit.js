@@ -6,6 +6,14 @@ var strip = require('chalk').stripColor
 
 var Log = require('..')
 
+class LogError extends Error {
+  constructor () {
+    super('this is a test error')
+    this.name = 'LogError'
+    this.info = 'test'
+  }
+}
+
 test.beforeEach((t) => {
   t.context.stdout = ''
   t.context.log = function () { t.context.stdout += fmt.apply(null, arguments) }
@@ -33,6 +41,18 @@ test('the log should support error-level messages', function (t) {
   var log = Log({}, { log: t.context.log })
   log.error('test', { value: 'hi' })
   strip(t.context.stdout).should.equal('[error] test {"value":"hi"}')
+})
+
+test('the log should support error objects in place of error message', function (t) {
+  var log = Log({}, { log: t.context.log })
+  log.error(new LogError())
+  strip(t.context.stdout).should.equal('[error] LogError: this is a test error {"error":{"name":"LogError","info":"test"}}')
+})
+
+test('the log should support error objects in place of warning message', function (t) {
+  var log = Log({}, { log: t.context.log })
+  log.warn(new LogError())
+  strip(t.context.stdout).should.equal('[warn]  LogError: this is a test error {"warning":{"name":"LogError","info":"test"}}')
 })
 
 test('the log should not throw on circular meta references', function (t) {
