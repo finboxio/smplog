@@ -97,6 +97,17 @@ test('the log should support tags', function (t) {
   log.tags.should.deep.equal({ tag: 'tag' })
 })
 
+test('the log should support clones with additional tags', function (t) {
+  var log1 = Log({}, { log: t.context.log })
+  log1.tag({ tag: 'tag' })
+  var log2 = log1.withTags({ other: 'other' })
+  log1.debug('tagged')
+  log2.debug('tagged')
+  strip(t.context.stdout).should.equal('[debug] tagged {"tag":"tag"}[debug] tagged {"tag":"tag","other":"other"}')
+  log1.tags.should.deep.equal({ tag: 'tag' })
+  log2.tags.should.deep.equal({ tag: 'tag', other: 'other' })
+})
+
 test('the log should support disabling colors via the environment', function (t) {
   process.env.SMPLOG_COLORS = 'false'
   var log = Log({}, { log: t.context.log })

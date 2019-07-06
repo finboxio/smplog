@@ -18,7 +18,8 @@ module.exports = function (defaults, options) {
 
   var logger = {
     tags: defaults,
-    tag: (meta) => assign(defaults, meta)
+    tag: (meta) => assign(defaults, meta),
+    withTags: (meta) => module.exports({ ...defaults, ...meta }, options)
   }
 
   var llength = Math.max(...levels.map((l) => l.length))

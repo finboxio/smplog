@@ -4,10 +4,10 @@
   "description": "Simple logging module to stdout. Machine and human readable.",
   "main": "index.js",
   "scripts": {
-    "ava": "./node_modules/.bin/ava --watch",
-    "test": "./node_modules/.bin/nyc ./node_modules/.bin/ava",
+    "ava": "ava --watch",
+    "test": "nyc ava",
     "coverage": "open coverage/index.html",
-    "lint": "./node_modules/.bin/eslint .",
+    "lint": "eslint .",
     "precommit": "npm run lint",
     "prepush": "npm test"
   },
