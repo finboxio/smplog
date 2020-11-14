@@ -1,4 +1,16 @@
 
+0.1.0 / 2020-11-14
+==================
+
+  * Multiline improvements
+  * Console intercept support
+  * Timestamp support
+  * smplog:: prefix for payload parseability
+  * Update History
+  * Update package-lock
+  * add package-lock.json
+  * Add option to clone with additional tags
+
 0.0.11 / 2019-07-06
 ===================
 
