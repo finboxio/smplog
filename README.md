@@ -6,7 +6,7 @@ Smplog does nothing but provide a simple, standard api for generating human-read
 
 Smplog messages are written in the following format:
 
-`[${level}] ${message} ${metadata.json}`
+`[${level}] ${message} smplog::${metadata.json}`
 
 Easy to read, easy to determine severity, easy to include relevant metadata.
 
@@ -21,7 +21,7 @@ log.info('this is a standard info message', { tag: 'info-message' })
 
 =====
 
-[info] this is a standard info message {"tag":"info-message"}
+[info] this is a standard info message smplog::{"tag":"info-message"}
 ```
 
 #### Defaults
@@ -33,7 +33,7 @@ log.info(`request started at ${Date.now()}`)
 
 =====
 
-[info] request started at 1474397320662 {"request_id":"bea91083fa003d"}
+[info] request started at 1474397320662 smplog::{"request_id":"bea91083fa003d"}
 ```
 
 #### Tags
@@ -48,7 +48,7 @@ log.info('tagged message')
 
 =====
 
-[info] tagged message {"tag_name":"tag"}
+[info] tagged message smplog::{"tag_name":"tag"}
 
 ```
 

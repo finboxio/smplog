@@ -1,43 +1,115 @@
-var assign = require('object-assign')
-var chalk = require('chalk')
-var stringify = require('json-stringify-safe')
+const assign = require('object-assign')
+const chalk = require('chalk')
+const stringify = require('json-stringify-safe')
+const util = require('util')
 
-var levels = [ 'debug', 'info', 'warn', 'error', 'none' ]
-var colors = [ chalk.gray.bold, chalk.blue.bold, chalk.yellow.bold, chalk.red.bold, chalk.black.bold ]
+const levels = {
+  debug: chalk.gray.bold,
+  info: chalk.blue.bold,
+  warn: chalk.yellow.bold,
+  error: chalk.red.bold
+}
+
+const installed = []
+const installable = [ 'debug', 'info', 'warn', 'error', 'log' ]
+const originals = installable.map((fn) => console[fn])
+
+// TODO: patch npm://debug, util.debuglog
 
 module.exports = function (defaults, options) {
   defaults = defaults || {}
   options = options || {}
 
-  var LOG_LEVEL = levels.indexOf(options.level || process.env.SMPLOG_LEVEL || 'debug')
-  if (LOG_LEVEL < 0) LOG_LEVEL = 0
+  const llevel = options.level || process.env.SMPLOG_LEVEL || 'info'
+  const llevels = Object.keys(levels)
 
-  var log = options.log || console.log
-  var color = options.color !== false && String(process.env.SMPLOG_COLORS) !== 'false'
-  var meta = options.meta !== false && String(process.env.SMPLOG_META) !== 'false'
+  let LOG_LEVEL = llevel === 'none'
+    ? llevels.length
+    : llevels.indexOf(llevel)
 
-  var logger = {
-    tags: defaults,
-    tag: (meta) => assign(defaults, meta),
-    withTags: (meta) => module.exports({ ...defaults, ...meta }, options)
+  if (LOG_LEVEL < 0) LOG_LEVEL = 1
+
+  const color = options.color !== false && String(process.env.SMPLOG_COLORS) !== 'false'
+  const meta = options.meta !== false && String(process.env.SMPLOG_META) !== 'false'
+  const timestamps = options.timestamps || process.env.SMPLOG_TIMESTAMPS
+  const timekey = options.timekey
+
+  const llength = Math.max(...llevels.map((l) => l.length))
+  const colorize = (colorizer, str) => color ? colorizer(str) : str
+  const write = function ({ timestamp, severity, message, payload }) {
+    // Ignore if below log level
+    if (llevels.indexOf(severity) < LOG_LEVEL) return
+
+    // Start with timestamp if enabled
+    const line = timestamps ? [ `${colorize(chalk.gray, new Date(timestamp).toISOString())}` ] : []
+
+    // Include severity
+    line.push(colorize(levels[severity], `[${severity}]`.padEnd(llength + 2)))
+
+    // Include message (indenting newlines if present)
+    const str = typeof message === 'string' ? message : util.inspect(message)
+    const split = str.split('\n')
+    const indented = split.map((s, i) => i ? `  ${s}` : s)
+    line.push(indented.join('\n'))
+
+    // Log payload
+    const metakeys = Object.keys(defaults).concat(Object.keys(payload || {}))
+    meta &&
+      metakeys.length &&
+      line.push(colorize(chalk.gray.dim, 'smplog::' + stringify(assign({}, defaults, payload))))
+
+    // Send all but info to stderr to keep stdout clean
+    const stream = severity === 'info' ? process.stdout : process.stderr
+    return stream.write(line.join(' ') + '\n')
   }
 
-  var llength = Math.max(...levels.map((l) => l.length))
-  levels.forEach((l, i) => {
-    var lformat = [ '%s', ...(new Array(llength - l.length).map((k) => '')) ].join(' ')
-    logger[l] = function (msg, details) {
-      const err = {}
-      if (msg instanceof Error) { err[l === 'warn' ? 'warning' : 'error'] = msg }
-      if (i >= LOG_LEVEL) {
-        if (color) {
-          if (meta) log(`${lformat} %s %s`, colors[i](`[${l}]`), msg, chalk.gray.dim(stringify(assign({}, err, defaults, details))))
-          else log(`${lformat} %s`, colors[i](`[${l}]`), msg)
-        } else {
-          if (meta) log(`${lformat} %s %s`, `[${l}]`, msg, stringify(assign({}, err, defaults, details)))
-          else log(`${lformat} %s`, `[${l}]`, msg)
-        }
+  const logger = {
+    tags: defaults,
+    tag: (meta) => assign(defaults, meta),
+    withTags: (meta) => module.exports({ ...defaults, ...meta }, options),
+    install: () => {
+      installed.push(logger)
+      installable.forEach((fn) => console[fn] = logger[fn])
+      return logger
+    },
+    uninstall: () => {
+      installed.pop()
+      installed.length
+        ? installed.pop().install()
+        : installable.forEach((name, i) => console[name] = originals[i])
+      return logger
+    },
+    none: () => {}
+  }
+
+  const log = options.log ? ((msg) => options.log(msg, write)) : write
+  llevels.forEach((severity) => {
+    logger[severity] = function (...args) {
+      const formats = typeof args[0] === 'string'
+        ? args[0].split(/[^%]%[sdifjoOc]/g)
+        : []
+
+      const consumed = formats.length
+
+      const payload = (args.length > consumed
+        && typeof args[args.length - 1] === 'object'
+        && !(args[args.length - 1] instanceof Error))
+        ? args.pop() : {}
+
+      if (args.length === 1 && args[0] instanceof Error) {
+        const key = severity === 'warn' ? 'warning' : 'error'
+        payload[key] = payload[key] || args[0]
       }
+
+      const message = util.format(...args)
+
+      const timestamp = timekey && payload[timekey]
+
+      return log({ timestamp, severity, message, payload })
     }
   })
+
+  logger.log = logger.info
+
   return logger
 }
