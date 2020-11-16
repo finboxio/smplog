@@ -36,7 +36,7 @@ module.exports = function (defaults, options) {
 
   const llength = Math.max(...llevels.map((l) => l.length))
   const colorize = (colorizer, str) => color ? colorizer(str) : str
-  const write = function ({ timestamp, severity, message, payload }) {
+  const write = function ({ timestamp, severity, message, payload = {} }) {
     // Ignore if below log level
     if (llevels.indexOf(severity) < LOG_LEVEL) return
 
@@ -53,10 +53,9 @@ module.exports = function (defaults, options) {
     line.push(indented.join('\n'))
 
     // Log payload
-    const metakeys = Object.keys(defaults).concat(Object.keys(payload || {}))
     meta &&
-      metakeys.length &&
-      line.push(colorize(chalk.gray.dim, 'smplog::' + stringify(assign({}, defaults, payload))))
+      Object.keys(payload).length &&
+      line.push(colorize(chalk.gray.dim, 'smplog::' + stringify(payload)))
 
     // Send all but info to stderr to keep stdout clean
     const stream = severity === 'info' ? process.stdout : process.stderr
@@ -82,7 +81,13 @@ module.exports = function (defaults, options) {
     none: () => {}
   }
 
-  const log = options.log ? ((msg) => options.log(msg, write)) : write
+  const log = ({ payload, ...msg }) => {
+    const meta = assign({}, defaults, payload)
+    return options.log
+      ? options.log({ ...msg, payload: meta }, write)
+      : write({ ...msg, payload: meta })
+  }
+
   llevels.forEach((severity) => {
     logger[severity] = function (...args) {
       const formats = typeof args[0] === 'string'
