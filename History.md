@@ -1,4 +1,9 @@
 
+0.1.2 / 2020-11-16
+==================
+
+* Fix missing tags in payload when using custom log function
+
 0.1.1 / 2020-11-14
 ==================
 
