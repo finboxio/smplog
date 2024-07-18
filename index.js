@@ -41,7 +41,7 @@ module.exports = function (defaults, options) {
     if (llevels.indexOf(severity) < LOG_LEVEL) return
 
     // Start with timestamp if enabled
-    const line = timestamps ? [ `${colorize(chalk.gray, new Date(timestamp).toISOString())}` ] : []
+    const line = timestamps ? [ `${colorize(chalk.gray, new Date(timestamp || Date.now()).toISOString())}` ] : []
 
     // Include severity
     line.push(colorize(levels[severity], `[${severity}]`.padEnd(llength + 2)))
@@ -49,13 +49,17 @@ module.exports = function (defaults, options) {
     // Include message (indenting newlines if present)
     const str = typeof message === 'string' ? message : util.inspect(message)
     const split = str.split('\n')
-    const indented = split.map((s, i) => i ? `  ${s}` : s)
-    line.push(indented.join('\n'))
+    const [ head, ...multilines ] = split.map((s, i) => i ? `  ${s}` : s)
+    line.push(head)
 
     // Log payload
     meta &&
       Object.keys(payload).length &&
       line.push(colorize(chalk.gray.dim, 'smplog::' + stringify(payload)))
+
+    if (multilines.length) {
+      line.push(`\n${multilines.join('\n')}`)
+    }
 
     // Send all but info to stderr to keep stdout clean
     const stream = severity === 'info' ? process.stdout : process.stderr
