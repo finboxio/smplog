@@ -1,78 +1,68 @@
+# 0.2.0 / 2024-07-18
 
-0.1.2 / 2020-11-16
-==================
+- Fix timestamp bug & improve multiline logs
+- Update changelog
 
-* Fix missing tags in payload when using custom log function
+# 0.1.2 / 2020-11-16
 
-0.1.1 / 2020-11-14
-==================
+- Fix missing tags in payload when using custom log function
 
-  * Remove chai dependency
+  # 0.1.1 / 2020-11-14
 
-0.1.0 / 2020-11-14
-==================
+  - Remove chai dependency
 
-  * Multiline improvements
-  * Console intercept support
-  * Timestamp support
-  * smplog:: prefix for payload parseability
-  * Update History
-  * Update package-lock
-  * add package-lock.json
-  * Add option to clone with additional tags
+  # 0.1.0 / 2020-11-14
 
-0.0.11 / 2019-07-06
-===================
+  - Multiline improvements
+  - Console intercept support
+  - Timestamp support
+  - smplog:: prefix for payload parseability
+  - Update History
+  - Update package-lock
+  - add package-lock.json
+  - Add option to clone with additional tags
 
-  * Add option to clone with additional tags
+  # 0.0.11 / 2019-07-06
 
-0.0.10 / 2017-02-03
-===================
+  - Add option to clone with additional tags
 
-  * update dependencies
+  # 0.0.10 / 2017-02-03
 
-0.0.9 / 2017-02-03
-==================
+  - update dependencies
 
-  * support automatic detail logging of errors
+  # 0.0.9 / 2017-02-03
 
-0.0.8 / 2016-11-28
-==================
+  - support automatic detail logging of errors
 
-  * make padding after level uniform so messages line up
+  # 0.0.8 / 2016-11-28
 
-0.0.7 / 2016-11-28
-==================
+  - make padding after level uniform so messages line up
 
-  * safe stringify for circular references
+  # 0.0.7 / 2016-11-28
 
-0.0.6 / 2016-11-28
-==================
+  - safe stringify for circular references
 
-  * update dev deps
-  * dim log metadata
+  # 0.0.6 / 2016-11-28
 
-0.0.5 / 2016-10-25
-==================
+  - update dev deps
+  - dim log metadata
 
-  * add tag support
+  # 0.0.5 / 2016-10-25
 
-0.0.4 / 2016-10-11
-==================
+  - add tag support
 
-  * update colors and add option to suppress metadata output
+  # 0.0.4 / 2016-10-11
 
-0.0.3 / 2016-09-21
-==================
+  - update colors and add option to suppress metadata output
 
-  * add color support
+  # 0.0.3 / 2016-09-21
 
-0.0.2 / 2016-09-20
-==================
+  - add color support
 
-  * Add readme, history
+  # 0.0.2 / 2016-09-20
 
-0.0.1 / 2016-09-20
-==================
+  - Add readme, history
 
-  * Initial commit
+  # 0.0.1 / 2016-09-20
+
+  - Initial commit
